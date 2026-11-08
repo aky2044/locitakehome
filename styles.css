@@ -1,0 +1,588 @@
+/* Positions/sizes inside .frame are taken verbatim from the Figma frames (1280 × 832).
+   Edge-anchored items use the same distances from the window edges as in Figma. */
+
+:root {
+  --btn-bg: rgba(217, 217, 217, 0.44);       /* #d9d9d9 @ 44% */
+  --btn-bg-hover: rgba(217, 217, 217, 0.72);
+  --btn-bg-active: rgba(217, 217, 217, 0.95);
+  --pc-active: #b3b3b3;
+  --pc-inactive: #d9d9d9;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);    /* Apple-style ease-out */
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: #fff;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #000;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+h1, p { margin: 0; font-weight: inherit; }
+button { font: inherit; color: inherit; border: 0; padding: 0; background: none; cursor: pointer; }
+img { display: block; }
+
+/* #stage is sized (in design px) to the window and scaled uniformly by app.js */
+#stage {
+  position: fixed; left: 0; top: 0;
+  width: 1280px; height: 832px;
+  transform-origin: 0 0;
+  background: #fff;
+  overflow: hidden;
+  user-select: none;
+}
+.frame {
+  position: absolute;
+  left: var(--fx, 0px); top: var(--fy, 0px);
+  width: 1280px; height: 832px;
+}
+.frame > * { position: absolute; }
+
+/* ---------- screens & transitions ---------- */
+.screen {
+  position: absolute; inset: 0;
+  background: #fff;
+  opacity: 0; visibility: hidden;
+  transform: translateX(var(--from, 40px));
+  transition: opacity 0.45s var(--ease), transform 0.6s var(--ease), visibility 0s linear 0.6s;
+}
+.screen.is-active {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 0.45s var(--ease), transform 0.6s var(--ease), visibility 0s;
+}
+.screen.is-leaving { transform: translateX(var(--to, -40px)); }
+.screen > * { position: absolute; }
+
+/* ---------- shared button (Figma Group 1 / Group 9) ---------- */
+.btn {
+  height: 52.414px;
+  border-radius: 14.372px;
+  background: var(--btn-bg);
+  transition: background-color 0.18s ease, opacity 0.2s ease, transform 0.18s var(--ease);
+}
+.btn:hover { background: var(--btn-bg-hover); }
+.btn:active { background: var(--btn-bg-active); transform: scale(0.98); }
+.btn:focus-visible { outline: 2px solid #538ed9; outline-offset: 3px; }
+.btn > * { position: absolute; }
+.btn-label {
+  top: 15.22px;
+  transform: translateX(-50%);
+  font-size: 15.217px; font-weight: 400; line-height: normal;
+  text-align: center; white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.btn-arrow { transition: opacity 0.2s ease; }
+.btn:disabled, .btn:disabled:hover, .btn:disabled:active {
+  background: var(--btn-bg); transform: none; cursor: not-allowed;
+}
+.btn:disabled .btn-label { color: #b0b0b0; }
+.btn:disabled .btn-arrow { opacity: 0.3; }
+
+/* ---------- Back button (edge-anchored, top-left) ---------- */
+.btn-back {
+  left: 24px; top: 24px; height: 36px;
+  padding: 0 14px 0 12px;
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 10px;
+  background: var(--btn-bg);
+  font-size: 15.217px; line-height: normal;
+  transition: background-color 0.18s ease, transform 0.18s var(--ease);
+  z-index: 5;
+}
+.btn-back img { transform: scaleX(-1); }   /* the Figma arrow, mirrored */
+.btn-back:hover  { background: var(--btn-bg-hover); }
+.btn-back:active { background: var(--btn-bg-active); transform: scale(0.97); }
+.btn-back:focus-visible { outline: 2px solid #538ed9; outline-offset: 3px; }
+
+/* ---------- Home ---------- */
+.home-send img { height: 51.098px; border-radius: 32px; object-fit: cover; }
+.home-send .soft-light { height: 51.142px; border-radius: 33px; background: rgba(255,255,255,0.5); mix-blend-mode: soft-light; }
+
+.home-title {
+  left: 101px; top: 286px; width: 420px;   /* same column as the setup screens */
+  font-size: 44px; font-weight: 600; line-height: 46px; letter-spacing: -0.44px;
+}
+.home-body { left: 101px; top: 404px; width: 400px; font-size: 15.5px; line-height: 23px; color: #2a2a2a; }
+
+.btn-start { left: 101px; top: 483px; width: 175.841px; }   /* same spot as Next on the setup screens */
+.btn-start .btn-label { left: 75.24px; width: 87.921px; }      /* 790.24 − 715 */
+.btn-start .btn-arrow { left: 126.81px; top: 21.54px; }        /* 841.81 − 715, 528.21 − 4.67 − 502 */
+
+/* ---------- Model setup (shared) ---------- */
+.setup-title { left: 101px; top: 286px; width: 420px; font-size: 44px; font-weight: 600; line-height: 46px; letter-spacing: -0.44px; }
+.setup-sub   { left: 101px; width: 467px; font-size: 16px; line-height: normal; color: #2a2a2a; }
+.setup-sub--v2 { top: 404px; }
+.setup-sub--v1 { top: 404px; }
+
+.btn-next { left: 101px; top: 483px; width: 147px; }
+.btn-next .btn-label { left: 62.9px; width: 73.5px; }           /* 163.9 − 101 */
+.btn-next .btn-arrow { left: 87.6px; top: 21.33px; }            /* 188.6 − 101, 509 − 4.67 − 483 */
+
+/* ---------- Model setup v2: recommended card ---------- */
+.model-card {
+  left: 693px; top: 157px; width: 434px; height: 514.447px;
+  border-radius: 33px;
+  transition: box-shadow 0.45s var(--ease);
+  isolation: isolate;
+}
+.model-card { overflow: hidden; }
+.model-card > * { position: absolute; left: 0; top: 0; width: 434px; }
+/* Figma 34:10 crop, in card coordinates:
+   x = -99 − 3.03%·1477 − 693 = −836.75,  y = 93 + 3.48%·828 − 157 = −35.19,  size 1477.15 × 828 */
+/* midnightbloom 2.png (722×828 ≈ 1.66× the card) fills the card */
+.model-card-bg     { width: 434px; height: 514.447px; object-fit: cover; object-position: 50% 50%; transition: opacity 0.35s ease; }
+.model-card-placeholder { height: 514.447px; background: #8d8d95; opacity: 0; transition: opacity 0.35s ease; }   /* low-fi stand-in until we have artwork */
+.model-card.is-placeholder .model-card-placeholder { opacity: 1; }
+.model-card.is-placeholder .model-card-bg { opacity: 0; }
+.model-card-border { height: 514.447px; border-radius: 33px; border: 0.5px solid #909090; }
+
+.mc-name, .mc-desc, .mc-size-label, .mc-size, .mc-avail { color: #fff; line-height: 55px; pointer-events: none; white-space: nowrap; }
+.mc-name       { left: 726px; top: 211px; font-size: 48px; font-weight: 600; letter-spacing: -0.48px; }
+.mc-desc       { left: 726px; top: 245px; font-size: 19px; font-weight: 300; letter-spacing: -0.19px; }
+.mc-size-label { left: 726px; top: 538px; font-size: 20px; font-weight: 600; letter-spacing: -0.2px; color: #c0c0c0; }
+.mc-size       { left: 726px; top: 573px; font-size: 36px; font-weight: 600; letter-spacing: -0.36px; }
+.mc-avail      { left: 864px; top: 580px; font-size: 13px; font-weight: 300; letter-spacing: -0.13px; }
+
+.link-own {
+  left: 910px; top: 684px; width: 218px; transform: translateX(-50%);
+  font-size: 15.5px; line-height: normal; color: #7b7b7b; text-align: center;
+  transition: color 0.15s ease;
+}
+.link-own:hover  { color: #000; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.link-own:active { color: #444; }
+.link-own:focus-visible { outline: 2px solid #538ed9; outline-offset: 4px; border-radius: 6px; }
+
+/* ---------- Model setup v1: option cards (layout of Figma card 4:36) ---------- */
+.options { left: 0; top: 0; width: 1280px; height: 832px; pointer-events: none; }
+.option {
+  position: absolute; left: 693px; width: 434px; height: 114px; border-radius: 34px;
+  pointer-events: auto; cursor: pointer;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.option > * { position: absolute; }
+.option:hover  { box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+.option:active { transform: scale(0.99); }
+.option:focus-visible { outline: 2px solid #538ed9; outline-offset: 3px; }
+.opt-logo   { left: 341px; top: 18px; width: 76px; height: 76px; border-radius: 18px;   /* Figma 35:25 / 35:24 / 35:28 */
+              background: #fafafa; box-shadow: inset 0 0 0 0.5px #b8b8b8; overflow: hidden; display: grid; place-items: center; }
+.opt-logo--photo { background: none; box-shadow: none; border-radius: 18px; }
+.logo-bonsai { width: 59px; height: 59px; background: #2f2f2f;                     /* Figma 34:16 masked by the logo shape */
+               -webkit-mask: url("assets/logo-bonsai-mask.png") center / 59px 59px no-repeat;
+                       mask: url("assets/logo-bonsai-mask.png") center / 59px 59px no-repeat; }
+.logo-phi    { position: absolute; left: -37.5%; top: -0.26%; width: 178.57%; height: 100.51%; max-width: none; }   /* Figma 35:22 crop */
+.logo-qwen   { width: 57px; height: 56px; object-fit: cover; }
+.logo-gemma  { width: 64px; height: 64px; object-fit: cover; }
+.opt-border { left: 0; top: 0; width: 434px; height: 113px; border-radius: 33px; border: 0.5px solid #909090; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.opt-radio  { left: 26px; top: 46px; }
+.opt-dot    { left: 31px; top: 51px; width: 10px; height: 10px; border-radius: 50%; background: #000; transform: scale(0); transition: transform 0.22s var(--ease); }
+.opt-title  { left: 70px; top: 23px; width: 250px; font-size: 20px; font-weight: 600; line-height: normal; }
+.opt-desc   { left: 70px; top: 52px; width: 250px; font-size: 13.5px; line-height: normal; white-space: nowrap; }
+.opt-meta   { left: 70px; top: 73px; width: 250px; font-size: 13.5px; line-height: normal; color: #b6b6b6; white-space: nowrap; }
+.option:hover .opt-logo { box-shadow: inset 0 0 0 0.5px #b8b8b8, 0 2px 8px rgba(0,0,0,0.06); }
+.option[aria-checked="true"] .opt-dot { transform: scale(1); }
+.option[aria-checked="true"] .opt-border {      /* gradient outline in the Loci colours */
+  border: 0; padding: 2px; z-index: 2;
+  background: linear-gradient(120deg, #8a9cb6, #c7a9da 35%, #aa8cc4 65%, #3c3a58);   /* same palette as the Home gradient */
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.option[aria-checked="true"] .opt-dot { background: linear-gradient(135deg, #8a9cb6, #c7a9da 45%, #aa8cc4 75%, #3c3a58); }
+
+/* ---------- Model download ---------- */
+.dl-bg {
+  left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+  filter: brightness(0.85);
+}
+/* film grain over all photos – reads as texture and hides upscaling softness */
+.dl-top-1, .dl-top-2, .dl-amount, .dl-hint { color: #fff; font-size: 15px; font-weight: 300; line-height: 21px; letter-spacing: -0.2px; white-space: nowrap; }
+.dl-top-1 { right: 34px; top: 32px; text-align: right; }        /* right edge 1246 of 1280 */
+.dl-top-2 { right: 34px; top: 53px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.dl-message { left: 0; top: 0; width: 1280px; height: 832px; transition: opacity 0.7s cubic-bezier(0.45, 0, 0.55, 1); pointer-events: none; }
+.dl-message.is-hidden { opacity: 0; }
+.dl-message > * { position: absolute; transform: translateX(-50%); text-align: center; color: #fff; text-shadow: 0 1px 12px rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.2); }
+/* Figma box is 781px; widened (same centre, x = 639.5) so the longer headlines stay on one line */
+.dl-title { left: 639.5px; top: 350px; width: 1100px; font-size: 50px; font-weight: 500; line-height: 55px; letter-spacing: -0.5px; }
+.dl-body  { left: 639.5px; top: 428px; width: 560px; font-size: 16.5px; font-weight: 300; line-height: 26px; letter-spacing: -0.1px; }
+
+/* bottom block: same distances from the bottom/left/right edges as Figma (frame height 832) */
+.dl-eta   { left: 45px; bottom: 114px; width: 781px; color: #fff; font-size: 19px; font-weight: 500; line-height: 55px; letter-spacing: -0.19px; }  /* top 663 */
+.dl-track { left: 48px; right: 58px; bottom: 111px; height: 7px; border-radius: 3.5px; background: #fff; overflow: hidden; }                       /* top 714, 48 → 1222 */
+.dl-fill  { height: 7px; width: 0; border-radius: 3.5px; background: #afafaf; transition: width 0.25s linear; }
+.dl-amount { left: 51px; bottom: 77px; font-variant-numeric: tabular-nums; }          /* top 730 */
+.dl-hint   { right: 58px; bottom: 77px; text-align: right; }                          /* right edge 1222 */
+
+/* ---------- Page control (UIPageControl-style), anchored bottom-left ---------- */
+.page-control {
+  position: absolute;
+  left: 14px; bottom: 4px;             /* dots at x=24, y=814 (14px from bottom) + 10px hit-area padding */
+  padding: 10px;
+  display: flex; gap: 3px;
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 10;
+  touch-action: none;
+  transition: background-color 0.2s ease;
+}
+.page-control:hover      { background: rgba(0, 0, 0, 0.04); }
+.page-control.is-pressed { background: rgba(0, 0, 0, 0.08); }
+.page-control:focus-visible { outline: 2px solid #538ed9; outline-offset: 0; }
+.pc-dot {
+  width: 12px; height: 4px; border-radius: 3px;
+  background: var(--pc-inactive);
+  transition: width 0.35s var(--ease), background-color 0.2s ease;
+}
+.pc-dot.is-current { width: 59px; background: var(--pc-active); }
+.page-control:hover .pc-dot { background: #c9c9c9; }
+.page-control:hover .pc-dot.is-current { background: #9a9a9a; }
+.on-dark .page-control:hover      { background: rgba(255, 255, 255, 0.12); }
+.on-dark .page-control.is-pressed { background: rgba(255, 255, 255, 0.2); }
+
+/* ---------- Liquid Glass (Apple, 2025) ----------
+   Clear material: blurs + saturates what's behind it, a bright specular rim
+   that is strongest at the top-left, a faint inner glow and a soft lift shadow. */
+.glass {
+  position: absolute;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.14));
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+          backdrop-filter: blur(10px) saturate(130%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.65),     /* top specular highlight */
+    inset 0 -1px 1px rgba(255,255,255,0.18),    /* bottom rim catch-light */
+    inset 0 0 12px rgba(255,255,255,0.12),      /* soft inner glow */
+    0 6px 18px rgba(0,0,0,0.14);                /* lift */
+  isolation: isolate;
+}
+.glass::before {               /* specular edge: 0.5px gradient stroke */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 0.75px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.6));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+.mc-badge {                    /* plain label (no pill/border) so it doesn't read as a button */
+  right: 168px; top: 177px;      /* right edge 1112, as in Figma */
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(255,255,255,0.9); font-size: 10.5px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* ---------- Home: soft wave glow in the Bonsai card colours ---------- */
+.home-glow { inset: 0; pointer-events: none; overflow: hidden; }   /* full screen, so the blur is never clipped */
+/* Wave like the reference (mirrored: mass on the right, crest high on the right falling to the left): colour bands follow the curve (lightest on the outside,
+   darkest at the bottom-left), crest high on the left falling to the right.
+   Each band is a huge, heavily blurred ellipse, so every edge melts away. */
+.home-glow .band { position: absolute; border-radius: 50%; }
+.home-glow .b1 { right: -40%; width: 140%; top: 58%; height: 110%; background: #e9d3ec; filter: blur(80px); opacity: 0.95; }   /* pink-lilac haze */
+.home-glow .b2 { right: -36%; width: 116%; top: 68%; height: 100%; background: #a9bfe6; filter: blur(70px); }                   /* moonlight blue */
+.home-glow .b3 { right: -34%; width: 96%;  top: 78%; height: 90%;  background: #5b55b4; filter: blur(60px); }                   /* blue-violet */
+.home-glow .b4 { right: -28%; width: 72%;  top: 88%; height: 80%;  background: #2c2878; filter: blur(55px); }                   /* deep violet, bottom-left */
+/* strong grain, overlay-blended: only visible where there is colour */
+.home-glow .glow-grain {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2' intercept='-0.5'/><feFuncG type='linear' slope='2' intercept='-0.5'/><feFuncB type='linear' slope='2' intercept='-0.5'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px; opacity: 0.85; mix-blend-mode: overlay;
+}
+
+/* ---------- Download complete ---------- */
+.dl-message.is-ready .dl-body { display: none; }
+.dl-continue {
+  left: 579.5px; top: 432px; width: 120px; height: 44px; border-radius: 22px;   /* centred on x = 639.5 */
+  font-size: 15.217px; font-weight: 500; cursor: pointer;
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.2s ease;
+}
+.dl-continue.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.dl-continue:hover  { background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.12)); }
+.dl-continue:active { transform: scale(0.97); }
+.dl-continue:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ---------- Chat (static) ---------- */
+.on-chat .page-control { opacity: 0; pointer-events: none; }
+.page-control { transition: background-color 0.2s ease, opacity 0.3s ease; }
+.screen[data-screen="chat"] { display: flex; font-size: 14px; }
+.screen[data-screen="chat"] > * { position: relative; }
+.chat-side {
+  width: 260px; height: 100%; flex: none;
+  background: #f7f7f8; border-right: 0.5px solid #e5e5e5;
+  padding: 18px 12px; display: flex; flex-direction: column; gap: 2px;
+}
+.cs-brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; padding: 4px 10px 16px; }
+.cs-logo { width: 22px; height: 22px; border-radius: 7px; overflow: hidden; }
+.cs-logo img { width: 100%; height: 100%; object-fit: cover; }
+.cs-new, .cs-search, .cs-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; color: #222; cursor: default; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-new:hover, .cs-search:hover, .cs-item:hover { background: #ececee; }
+.cs-item.is-active { background: #e6e6e9; }
+.cs-label { font-size: 12px; color: #8e8e93; padding: 16px 10px 6px; }
+.cs-user { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; }
+.cs-avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 600; font-size: 13px; background: linear-gradient(135deg, #538ed9, #af66d2 60%, #f8b624); }
+.cs-local { margin-left: auto; font-size: 11px; color: #8e8e93; }
+
+.chat-main { flex: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; }
+.chat-top { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+.chat-model { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 500; padding: 6px 10px; border-radius: 9px; }
+.chat-model:hover { background: #f2f2f3; }
+.chat-offline { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #6e6e73; }
+.chat-offline i { width: 7px; height: 7px; border-radius: 50%; background: #34c759; }
+
+.chat-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; padding: 0 40px 60px; }
+.chat-hello { font-size: 30px; font-weight: 500; letter-spacing: -0.4px; }
+.chat-input {
+  width: min(680px, 100%); border-radius: 26px; padding: 16px 16px 12px 22px;
+  background: #fff; border: 0.5px solid #dcdcdf;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+}
+.ci-placeholder { color: #a1a1a6; font-size: 16px; display: block; padding: 2px 0 18px; }
+.ci-row { display: flex; justify-content: space-between; align-items: center; }
+.ci-chip { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 0.5px solid #dcdcdf; color: #555; }
+.ci-send { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #538ed9, #af66d2 60%, #f8b624); }
+.chat-suggest { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 680px; }
+.chat-suggest span { padding: 8px 14px; border-radius: 999px; border: 0.5px solid #dcdcdf; color: #444; font-size: 13px; cursor: default; }
+.chat-suggest span:hover { background: #f5f5f6; }
+.chat-foot { text-align: center; font-size: 11.5px; color: #8e8e93; padding: 0 0 16px; }
+
+
+/* ---------- Download mode 2: click-through cards (toggle with B) ---------- */
+
+.dl-cards { left: 0; top: 0; width: 1280px; height: 832px; pointer-events: none; opacity: 0; transition: opacity 0.5s ease; }
+.screen.mode-cards .dl-cards { opacity: 1; }
+.screen.mode-cards .dl-cards .dl-card { pointer-events: auto; transform: none; }
+.screen.mode-cards .dl-message { opacity: 0; }
+.screen.is-done .dl-cards { opacity: 0; pointer-events: none; }
+.screen.is-done .dl-cards .dl-card { pointer-events: none; }
+.screen.is-done .dl-message:not(.is-hidden) { opacity: 1; }
+
+.dl-card {
+  left: 359.5px; top: 262px; width: 560px; height: 300px;     /* centred on x = 639.5 */
+  border-radius: 28px; padding: 30px 32px 24px;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+          backdrop-filter: blur(22px) saturate(140%);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.5s var(--ease);
+}
+.dl-card > * { position: relative; z-index: 1; }
+.dlc-content { flex: 1; transition: opacity 0.26s ease-in-out; }   /* simple in-place crossfade, no movement */
+.dlc-content.is-out { opacity: 0; }
+.dlc-count { font-size: 12.5px; font-weight: 400; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; margin-bottom: 14px; }
+.dlc-title { margin: 0 0 12px; font-size: 30px; font-weight: 500; line-height: 1.15; letter-spacing: -0.4px; color: #fff; }
+.dlc-body  { font-size: 16px; font-weight: 300; line-height: 1.55; color: rgba(255,255,255,0.88); }
+.dlc-dots  { display: flex; gap: 6px; justify-content: center; }
+.dlc-dot   { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s ease, width 0.3s var(--ease); }
+.dlc-dot:hover { background: rgba(255,255,255,0.6); }
+.dlc-dot.is-current { width: 20px; border-radius: 4px; background: #fff; }
+.dlc-arrow {                    /* glass circles 16px outside each side of the card, vertically centred */
+  top: 390px; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; color: #fff; cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease, background 0.2s ease, transform 0.15s var(--ease);
+}
+.dlc-arrow svg { position: relative; z-index: 1; }
+.dlc-arrow--prev { left: 299.5px; }
+.dlc-arrow--next { left: 935.5px; }
+.screen.mode-cards .dlc-arrow { opacity: 1; pointer-events: auto; }
+.screen.is-done .dlc-arrow { opacity: 0; pointer-events: none; }
+.dlc-arrow:hover { background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.16)); }
+.dlc-arrow:active { transform: scale(0.94); }
+.dlc-arrow:focus-visible, .dlc-dot:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* "Recommended for you" – same style as "Choose my own model", left-aligned with the card */
+.mc-recommended { left: 693px; top: 126px; font-size: 15.5px; line-height: normal; color: #7b7b7b; }
+
+/* ===================== Dark mode (toggled with N; class on <body>) ===================== */
+body, #stage { transition: background-color 0.4s ease, color 0.4s ease; }
+body.theme-dark {
+  --btn-bg: rgba(255, 255, 255, 0.08);
+  --btn-bg-hover: rgba(255, 255, 255, 0.14);
+  --btn-bg-active: rgba(255, 255, 255, 0.2);
+  --pc-active: #8b8b95;
+  --pc-inactive: #3a3a44;
+  background: #000; color: #f1f1f4;
+}
+.theme-dark #stage, .theme-dark .screen { background: #000; }
+.theme-dark .screen--dark { background: #000; }
+
+/* text */
+.theme-dark .home-body, .theme-dark .setup-sub { color: #c9c9d1; }
+.theme-dark .link-own, .theme-dark .mc-recommended { color: #8b8b95; }
+.theme-dark .link-own:hover  { color: #fff; }
+.theme-dark .link-own:active { color: #c9c9d1; }
+.theme-dark .btn:disabled .btn-label { color: #5c5c66; }
+
+/* black Figma arrows → white */
+.theme-dark .btn-arrow, .theme-dark .btn-back img { filter: invert(1); }
+.theme-dark .btn-back img { transform: scaleX(-1); }
+
+/* recommended card */
+.theme-dark .model-card-border { border-color: rgba(255, 255, 255, 0.18); }
+
+/* model list */
+.theme-dark .opt-border { border-color: rgba(255, 255, 255, 0.2); }
+.theme-dark .opt-radio  { filter: invert(1) brightness(0.9); }
+.theme-dark .opt-meta   { color: #6f6f79; }
+.theme-dark .opt-logo   { background: #1a1a21; box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16); }
+.theme-dark .opt-logo--photo { background: none; box-shadow: none; }
+.theme-dark .logo-bonsai { background: #e9e9ee; }
+.theme-dark .option:hover { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); }
+.theme-dark .option:hover .opt-logo { box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.24); }
+
+/* page control */
+.theme-dark .page-control:hover      { background: rgba(255, 255, 255, 0.06); }
+.theme-dark .page-control.is-pressed { background: rgba(255, 255, 255, 0.1); }
+.theme-dark .page-control:hover .pc-dot { background: #4a4a55; }
+.theme-dark .page-control:hover .pc-dot.is-current { background: #b0b0ba; }
+
+/* chat */
+.theme-dark .chat-side { background: #131318; border-right-color: #24242c; }
+.theme-dark .cs-new, .theme-dark .cs-search, .theme-dark .cs-item { color: #e2e2e8; }
+.theme-dark .cs-new:hover, .theme-dark .cs-search:hover, .theme-dark .cs-item:hover { background: #1e1e25; }
+.theme-dark .cs-item.is-active { background: #24242c; }
+.theme-dark .chat-model:hover { background: #1c1c22; }
+.theme-dark .chat-offline, .theme-dark .cs-label, .theme-dark .cs-local, .theme-dark .chat-foot { color: #8b8b95; }
+.theme-dark .chat-input { background: #17171d; border-color: #2c2c35; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4); }
+.theme-dark .ci-placeholder { color: #6f6f79; }
+.theme-dark .ci-chip, .theme-dark .chat-suggest span { border-color: #2c2c35; color: #c9c9d1; }
+.theme-dark .chat-suggest span:hover { background: #1c1c22; }
+
+/* Save (model list): no arrow, label centred in the 147px button */
+.btn-save .btn-label { left: 73.5px; }
+
+/* Qwen logo: white facets become transparent in dark mode */
+.theme-dark .logo-qwen { content: url("assets/logo-qwen-clear.png"); }
+.theme-dark .model-card-placeholder { background: #3a3a42; }
+
+/* ---------- "Garden comes to life" when the download finishes ---------- */
+.dl-bloom {
+  inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 62%, rgba(214,184,228,0.55), rgba(214,184,228,0) 70%),
+    radial-gradient(ellipse 45% 40% at 28% 18%, rgba(170,195,240,0.35), rgba(170,195,240,0) 70%),
+    radial-gradient(ellipse 50% 35% at 75% 80%, rgba(196,150,220,0.4), rgba(196,150,220,0) 70%);
+  transition: opacity 3.2s ease;
+}
+.dl-bg { transition: filter 3.5s ease; }   /* field slowly brightens + saturates when done */
+.screen.is-done .dl-bg    { filter: brightness(1.06) saturate(1.4) contrast(1.03); }   /* toned down slightly */
+.screen.is-done .dl-bloom { opacity: 0.78; animation: bloom-breathe 6s ease-in-out 3.2s infinite; }
+@keyframes bloom-breathe { 50% { opacity: 0.6; } }
+.screen.is-done .dl-title { text-shadow: 0 0 24px rgba(230,210,255,0.55), 0 1px 12px rgba(0,0,0,0.3); transition: text-shadow 2s ease; }
+
+/* Continue: clear glass (very light tint + blur), thin bright rim, OUTER glow only */
+.dl-continue {
+  left: 567.5px; width: 144px; height: 48px; border-radius: 24px; top: 430px;   /* larger, still centred on x = 639.5 */
+  font-size: 16px; font-weight: 500; letter-spacing: 0.01em;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.12));
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+          backdrop-filter: blur(14px) saturate(160%);
+  text-shadow: 0 1px 8px rgba(30, 10, 70, 0.5);
+  box-shadow: none;
+}
+.dl-continue:hover { background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.2)); }
+.dl-continue.is-shown {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45), 0 0 22px rgba(225, 200, 250, 0.75), 0 0 56px rgba(170, 150, 235, 0.5);
+  animation: continue-glow 3s ease-in-out 0.6s infinite;
+}
+@keyframes continue-glow {
+  50% { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 32px rgba(230, 205, 252, 0.95), 0 0 84px rgba(170, 150, 235, 0.65); }
+}
+
+.screen.is-done .dl-bloom { transition-delay: 0.8s; }   /* bloom settles in as the light wave passes */
+.theme-dark .home-glow .b1 { opacity: 0.55; }   /* outer haze reads brighter on black, so tone it down */
+/* Continue: bright frosted glass (prominent style) so it stands out against the lit-up field */
+.dl-continue { background: rgba(255, 255, 255, 0.82); color: #2a2360; text-shadow: none; font-weight: 500; }
+.dl-continue:hover { background: rgba(255, 255, 255, 0.95); }
+
+
+/* Continue: semi-transparent glass with a soft light emanating from its edges */
+.dl-continue { background: rgba(255, 255, 255, 0.5); color: #241d55; }
+.dl-continue:hover { background: rgba(255, 255, 255, 0.65); }
+.dl-continue.is-shown {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6),        /* bright rim */
+    0 0 10px 1px rgba(255, 255, 255, 0.45),    /* light right at the edge */
+    0 0 30px 3px rgba(228, 205, 252, 0.45),    /* lilac halo */
+    0 0 76px 8px rgba(170, 150, 235, 0.28);    /* faint wide aura */
+  animation: continue-emanate 3.2s ease-in-out 0.6s infinite;
+}
+@keyframes continue-emanate {
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.75),
+      0 0 14px 2px rgba(255, 255, 255, 0.55),
+      0 0 40px 6px rgba(232, 210, 254, 0.55),
+      0 0 100px 14px rgba(170, 150, 235, 0.36);
+  }
+}
+
+/* ===================== Not enough storage (hidden dev key P; Figma 45:2) ===================== */
+.mc-desc { top: 253px; }   /* Figma 45:22: a little more room under the name */
+.btn-storage { left: 261px; top: 483px; width: 221px; height: 52px;      /* Figma 45:43 */
+               opacity: 0; pointer-events: none; transition: opacity 0.3s ease, background-color 0.18s ease, transform 0.18s var(--ease); }
+.btn-storage .btn-label { left: 110.5px; width: 165px; top: 15px; }      /* 371.5 − 261 */
+.no-space .btn-storage { opacity: 1; pointer-events: auto; }
+
+.mc-error {                                   /* Figma 45:29: 367 × 68 frosted panel inside the card */
+  left: 726px; top: 307px; width: 367px; height: 68px; border-radius: 13px;
+  border: 0.5px solid rgba(255, 255, 255, 0.84);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.32));
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #fff; pointer-events: none;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.35s ease, transform 0.35s var(--ease);
+}
+.mc-error > * { position: absolute; opacity: 0.84; }
+.no-space .mc-error { opacity: 1; transform: none; }
+.mc-error-icon  { left: 18px; top: 14px; width: 17px; height: 17px; }                                    /* 744 − 726, 321 − 307 */
+.mc-error-title { left: 38px; top: 14px; font-size: 14px; font-weight: 500; line-height: 17px; white-space: nowrap; }  /* 764 − 726 */
+.mc-error-body  { left: 18px; top: 37px; width: 330px; font-size: 10px; line-height: normal; white-space: nowrap; }   /* 344 − 307 */
+
+/* model list: small red note under the biggest models' cards, right-aligned */
+.opt-nospace { right: 10px; top: 118px; font-size: 11.5px; line-height: 14px; color: #d63b3b; white-space: nowrap;
+               opacity: 0; transition: opacity 0.3s ease; }
+.low-storage .opt-nospace { opacity: 1; }
+.theme-dark .opt-nospace { color: #ff6b6b; }
+
+/* ===================== Download: pause button + lost connection ===================== */
+.dl-pause {                                   /* small glass circle centred on top of the bar */
+  left: calc(50% - 5px); bottom: 128px; width: 30px; height: 30px; border-radius: 50%;
+  transform: translateX(-50%);
+  display: grid; place-items: center; color: #fff;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.55), 0 4px 12px rgba(0,0,0,0.12);
+  transition: opacity 0.4s ease, background 0.2s ease, transform 0.15s var(--ease);
+}
+.dl-pause svg { position: relative; z-index: 1; grid-area: 1 / 1; transition: opacity 0.2s ease, transform 0.2s var(--ease); }
+.dl-pause .i-play { opacity: 0; transform: scale(0.6); }
+.screen.is-paused .dl-pause .i-pause { opacity: 0; transform: scale(0.6); }
+.screen.is-paused .dl-pause .i-play  { opacity: 1; transform: none; }
+.dl-pause:hover  { background: linear-gradient(180deg, rgba(255,255,255,0.42), rgba(255,255,255,0.22)); }
+.dl-pause:active { transform: translateX(-50%) scale(0.92); }
+.dl-pause:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.screen.is-offline .dl-pause, .screen.is-done .dl-pause { opacity: 0; pointer-events: none; }
+
+/* while paused / offline / "resumed": the status message replaces the facts, in either view */
+.screen.is-held .dl-cards, .screen.is-held .dlc-arrow { opacity: 0; pointer-events: none; }
+.screen.is-held .dl-cards .dl-card { pointer-events: none; }
+.screen.is-held .dl-message:not(.is-hidden) { opacity: 1; }
+.screen.is-paused .dl-fill, .screen.is-offline .dl-fill { background: #c9c9c9; }
+
+.dl-retry {                                   /* "Try again" glass pill under the offline message */
+  left: 639.5px; top: 480px; height: 40px; padding: 0 18px 0 15px; border-radius: 20px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 500; color: #fff; cursor: pointer;
+  opacity: 0; pointer-events: none; transform: translate(-50%, 6px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.2s ease;
+}
+.dl-retry > * { position: relative; z-index: 1; }
+.dl-retry.is-shown { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+.dl-retry:hover  { background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2)); }
+.dl-retry:active { transform: translate(-50%, 0) scale(0.97); }
+.dl-retry:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.dl-retry.is-checking svg { animation: retry-spin 0.9s var(--ease); }
+@keyframes retry-spin { to { transform: rotate(360deg); } }
+.screen:not(.is-offline) .dl-retry { opacity: 0; pointer-events: none; }
+/* no-space notice: text + icon in solid white, layered above the frosted panel */
+.mc-error > * { opacity: 1; z-index: 1; color: #fff; }
+.mc-error-icon { filter: brightness(0) invert(1); }

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loci — Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=47">
+</head>
+<body>
+  <!--
+    Layout: #stage fills the whole window. Content inside each .frame keeps the
+    Figma Mac-window coordinates (1280 × 832) and is scaled uniformly + centred.
+    Edge-anchored chrome (page control, back button, download bar/labels) sticks
+    to the window edges using the same offsets as in Figma.
+  -->
+  <main id="stage">
+
+    <!-- ============ Home (Figma 4:2) ============ -->
+    <section class="screen is-active" data-screen="home" data-page="0" aria-label="Welcome">
+      <div class="home-glow" aria-hidden="true"><span class="band b1"></span><span class="band b2"></span><span class="band b3"></span><span class="band b4"></span><span class="glow-grain"></span></div>
+      <div class="frame">
+        <h1 class="home-title">Welcome to Loci, Michael.</h1>
+        <p class="home-body">With a local model, your words never leave this Mac. Loci has no ads, no subscriptions, and no account.</p>
+
+        <button class="btn btn-start" data-go="v2">
+          <span class="btn-label">Start setup</span>
+          <img class="btn-arrow" src="assets/arrow-start.svg" width="19.2326" height="9.33814" alt="">
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ Model Setup – v2 (Figma 5:74) ============ -->
+    <section class="screen" data-screen="v2" data-page="1" aria-label="Set up your first model">
+      <button class="btn-back" data-go="home" aria-label="Back to welcome">
+        <img src="assets/arrow-next.svg" width="16.1821" height="9.33814" alt=""><span>Back</span>
+      </button>
+      <div class="frame">
+        <h1 class="setup-title setup-title--v2">Let’s setup your first model</h1>
+        <p class="setup-sub setup-sub--v2">You can always add other models later.</p>
+
+        <button class="btn btn-next btn-next--v2" id="v2-next" data-action="download-recommended">
+          <span class="btn-label">Next</span>
+          <img class="btn-arrow" src="assets/arrow-next.svg" width="16.1821" height="9.33814" alt="">
+        </button>
+        <!-- Not-enough-space state (Figma 45:42) -->
+        <button class="btn btn-storage" data-action="open-storage" tabindex="-1">
+          <span class="btn-label">Open Storage Settings</span>
+        </button>
+
+        <p class="mc-recommended" id="mc-recommended">Recommended for you</p>
+        <div class="model-card" id="model-card" aria-label="Recommended model: Bonsai 2 4B">
+          <!-- "midnightbloom 2.png" (722×828), cover-fitted into the rounded card -->
+          <img class="model-card-bg" id="mc-photo" src="assets/card-bloom-2.png" alt="">
+          <span class="model-card-placeholder"></span>
+          <span class="model-card-border"></span>
+        </div>
+        <span class="mc-badge"><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0 6.2 3.8 10 5 6.2 6.2 5 10 3.8 6.2 0 5 3.8 3.8Z" fill="currentColor"/></svg><span id="mc-badge-text">Best all-round</span></span>
+        <p class="mc-name" id="mc-name">Bonsai 2 4B</p>
+        <p class="mc-desc" id="mc-desc">Excellent writing and reasoning</p>
+        <!-- Not-enough-space notice (Figma 45:29 / 45:31 / 45:33 / 45:36) -->
+        <div class="mc-error" id="mc-error" role="alert" aria-hidden="true">
+          <img class="mc-error-icon" src="assets/icon-error.png" width="17" height="17" alt="">
+          <p class="mc-error-title" id="mc-error-title">You need 0.5 GB more space.</p>
+          <p class="mc-error-body">Free up space on your Mac or choose a smaller model to continue.</p>
+        </div>
+        <p class="mc-size-label">Size</p>
+        <p class="mc-size" id="mc-size">1.55 GB</p>
+        <p class="mc-avail" id="mc-avail">1.6 GB available</p>
+
+        <button class="link-own" data-go="v1">Choose my own model</button>
+      </div>
+    </section>
+
+    <!-- ============ Model Setup – v1 (Figma 4:3) ============ -->
+    <section class="screen" data-screen="v1" data-page="1" aria-label="Choose a model">
+      <div class="frame">
+        <h1 class="setup-title setup-title--v1">What should Loci be best at?</h1>
+        <p class="setup-sub setup-sub--v1">You can always add other models later.</p>
+
+        <button class="btn btn-next btn-save" id="v1-save" data-action="save-model">
+          <span class="btn-label">Save</span>
+        </button>
+
+        <!-- Cards are generated from MODELS in app.js using the Figma 4:36 card layout. -->
+        <div class="options" id="options" role="radiogroup" aria-label="Models"></div>
+      </div>
+    </section>
+
+    <!-- ============ Model Download (Figma 9:162) ============ -->
+    <section class="screen screen--dark" data-screen="download" data-page="2" aria-label="Downloading your model">
+      <!-- Kling clip, edited with ffmpeg: seamless 5 s loop (end cross-faded into start), soft glow, film grain -->
+      <video class="dl-bg" src="assets/field-loop.mp4" poster="assets/field-loop-poster.jpg" muted loop playsinline preload="auto"></video>
+      <div class="dl-bloom" aria-hidden="true"></div>
+
+      <p class="dl-top-1">Downloading your model</p>
+      <p class="dl-top-2"><span id="dl-model">Bonsai 2 4b</span><br><span id="dl-top-progress">0/1.55GB (0%)</span></p>
+
+      <div class="frame">
+        <div class="dl-message" id="dl-message">
+          <h1 class="dl-title" id="dl-title">Help make AI greener.</h1>
+          <p class="dl-body" id="dl-body">A single cloud-AI query uses about 10x the electricity of a web search. With a local model, Loci runs entirely on this Mac: no data centers, no extra water use.</p>
+        </div>
+        <button class="glass dl-continue" id="dl-continue" data-go="chat" tabindex="-1">Continue</button>
+        <button class="glass dl-retry" id="dl-retry" tabindex="-1">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"/><path d="M13.5 2.5v3.2h-3.2"/></svg>
+          <span>Try again</span>
+        </button>
+
+        <!-- Mode 2: click-through info cards (press B on the download screen to switch) -->
+        <div class="dl-cards" id="dl-cards" aria-hidden="true">
+          <article class="glass dl-card" aria-roledescription="carousel" aria-label="About local AI">
+            <div class="dlc-content" id="dlc-content">
+              <p class="dlc-count" id="dlc-count">1 of 4</p>
+              <h2 class="dlc-title" id="dlc-title"></h2>
+              <p class="dlc-body" id="dlc-body"></p>
+            </div>
+            <div class="dlc-dots" id="dlc-dots"></div>
+          </article>
+          <button class="glass dlc-arrow dlc-arrow--prev" id="dlc-back" aria-label="Previous card">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+          </button>
+          <button class="glass dlc-arrow dlc-arrow--next" id="dlc-next" aria-label="Next card">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="dl-eta" id="dl-eta" aria-live="polite">About 5 minutes left</p>
+      <button class="glass dl-pause" id="dl-pause" aria-label="Pause download">
+        <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="1" fill="currentColor"/><rect x="7.4" y="1.5" width="2.6" height="9" rx="1" fill="currentColor"/></svg>
+        <svg class="i-play" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.2 1.8v8.4c0 .5.5.8.9.5l6.4-4.2a.6.6 0 0 0 0-1L4.1 1.3c-.4-.3-.9 0-.9.5Z" fill="currentColor"/></svg>
+      </button>
+      <div class="dl-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dl-bar">
+        <div class="dl-fill" id="dl-fill"></div>
+      </div>
+      <p class="dl-amount" id="dl-amount">0 of 1.55GB</p>
+      <p class="dl-hint" id="dl-hint">You may minimize Loci</p>
+    </section>
+
+    <!-- ============ Chat (static, shown after Continue) ============ -->
+    <section class="screen" data-screen="chat" data-page="3" aria-label="Loci chat">
+      <aside class="chat-side">
+        <div class="cs-brand"><span class="cs-logo"><img src="assets/card-gradient.png" alt=""></span>Loci</div>
+        <div class="cs-new">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          New chat
+        </div>
+        <div class="cs-search">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+          Search chats
+        </div>
+        <p class="cs-label">Today</p>
+        <div class="cs-item is-active">Welcome to Loci</div>
+        <p class="cs-label">Previous 7 days</p>
+        <div class="cs-item">Weekend trip packing list</div>
+        <div class="cs-item">Rewrite cover letter intro</div>
+        <div class="cs-item">Explain compound interest</div>
+        <div class="cs-item">Dinner ideas with leftover rice</div>
+        <div class="cs-user"><span class="cs-avatar">M</span>Michael<span class="cs-local">On this Mac</span></div>
+      </aside>
+
+      <div class="chat-main">
+        <div class="chat-top">
+          <div class="chat-model"><span id="chat-model">Bonsai 2 4B</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 6 7.5 9 4.5"/></svg>
+          </div>
+          <span class="chat-offline"><i></i>Running locally</span>
+        </div>
+
+        <div class="chat-center">
+          <h1 class="chat-hello">What’s on your mind, Michael?</h1>
+          <div class="chat-input">
+            <span class="ci-placeholder">Ask Loci anything</span>
+            <div class="ci-row">
+              <span class="ci-chip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></span>
+              <span class="ci-send"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span>
+            </div>
+          </div>
+          <div class="chat-suggest">
+            <span>Summarize a document</span><span>Help me write an email</span><span>Plan my week</span><span>Brainstorm ideas</span>
+          </div>
+        </div>
+        <p class="chat-foot">Your chats stay on this Mac.</p>
+      </div>
+    </section>
+
+    <!-- ============ Page control (UIPageControl-style, persistent) ============ -->
+    <div class="page-control" id="page-control" role="tablist" aria-label="Onboarding pages" tabindex="0">
+      <span class="pc-dot" role="tab" aria-label="Page 1: Welcome"></span>
+      <span class="pc-dot" role="tab" aria-label="Page 2: Model setup"></span>
+      <span class="pc-dot" role="tab" aria-label="Page 3: Download"></span>
+    </div>
+
+  </main>
+  <script src="app.js?v=47"></script>
+</body>
+</html>
