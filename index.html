@@ -7,7 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=47">
+  <link rel="stylesheet" href="styles.css?v=48">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <script>
+    // Normal browser tab -> show the app inside a drawn Mac window.
+    // Installed app (standalone) or the local run.py window (?app) -> fill the window.
+    if (!matchMedia("(display-mode: standalone)").matches && !new URLSearchParams(location.search).has("app"))
+      document.documentElement.classList.add("framed");
+  </script>
 </head>
 <body>
   <!--
@@ -16,6 +26,7 @@
     Edge-anchored chrome (page control, back button, download bar/labels) sticks
     to the window edges using the same offsets as in Figma.
   -->
+  <div class="mac-window" aria-hidden="true"><div class="mac-titlebar"><span class="mac-lights"><i></i><i></i><i></i></span><span class="mac-title">Loci</span></div></div>
   <main id="stage">
 
     <!-- ============ Home (Figma 4:2) ============ -->
@@ -195,6 +206,6 @@
     </div>
 
   </main>
-  <script src="app.js?v=47"></script>
+  <script src="app.js?v=48"></script>
 </body>
 </html>

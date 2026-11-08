@@ -7,7 +7,7 @@ import functools, http.server, os, shutil, subprocess, sys, threading, webbrowse
 
 PORT = int(os.environ.get("PORT", 5173))
 ROOT = os.path.dirname(os.path.abspath(__file__))
-URL = f"http://127.0.0.1:{PORT}/"
+URL = f"http://127.0.0.1:{PORT}/?app"  # ?app = fill the app window (no drawn Mac frame)
 
 
 class NoCache(http.server.SimpleHTTPRequestHandler):

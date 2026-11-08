@@ -22,7 +22,23 @@
   /* ---------- fill the window, keeping the 1280×832 Mac layout ---------- */
   const FRAME_W = 1280, FRAME_H = 832;
   const stage = document.getElementById("stage");
+  const framed = document.documentElement.classList.contains("framed");
+  const macWin = document.querySelector(".mac-window");
   function fit() {
+    if (framed) {
+      // normal browser tab: a 1280×832 Mac window (plus title bar), centred and scaled to fit
+      const TB = 28, M = innerWidth < 700 ? 8 : 40;
+      const s = Math.min((innerWidth - 2 * M) / FRAME_W, (innerHeight - 2 * M - TB) / FRAME_H, 1);
+      const w = FRAME_W * s, h = FRAME_H * s;
+      const x = Math.round((innerWidth - w) / 2), y = Math.round((innerHeight - h - TB) / 2);
+      Object.assign(macWin.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h + TB}px` });
+      stage.style.width = `${FRAME_W}px`;
+      stage.style.height = `${FRAME_H}px`;
+      stage.style.transform = `translate(${x}px, ${y + TB}px) scale(${s})`;
+      stage.style.setProperty("--fx", "0px");
+      stage.style.setProperty("--fy", "0px");
+      return;
+    }
     const s = Math.min(innerWidth / FRAME_W, innerHeight / FRAME_H);
     const W = innerWidth / s, H = innerHeight / s;       // window size in design px
     stage.style.width = `${W}px`;
@@ -33,6 +49,20 @@
   }
   addEventListener("resize", fit);
   fit();
+
+  // Installed app (PWA): open at the Figma Mac window size, once per launch
+  if (matchMedia("(display-mode: standalone)").matches) {
+    try {
+      if (!sessionStorage.getItem("loci-sized")) {
+        sessionStorage.setItem("loci-sized", "1");
+        resizeTo(FRAME_W + (outerWidth - innerWidth), FRAME_H + (outerHeight - innerHeight));
+      }
+    } catch (_) {}
+  }
+  // service worker → Chrome / Edge offer "Install Loci" (needs https or localhost)
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  }
 
   const screens = Object.fromEntries(
     [...document.querySelectorAll(".screen")].map((el) => [el.dataset.screen, el])

@@ -586,3 +586,36 @@ body.theme-dark {
 /* no-space notice: text + icon in solid white, layered above the frosted panel */
 .mc-error > * { opacity: 1; z-index: 1; color: #fff; }
 .mc-error-icon { filter: brightness(0) invert(1); }
+
+/* ===================== Drawn Mac window (normal browser tab, e.g. on Netlify) ===================== */
+.mac-window { display: none; }
+html.framed body {
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 100%, rgba(169, 191, 230, 0.55), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 15% 0%, rgba(233, 211, 236, 0.6), transparent 70%),
+    #eeedf3;
+}
+html.framed .mac-window {
+  display: block; position: fixed; z-index: 0;
+  border-radius: 12px; background: #fff; overflow: hidden;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 22px 70px rgba(30, 20, 70, 0.28), 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+.mac-titlebar {
+  height: 28px; position: relative; display: flex; align-items: center; justify-content: center;
+  background: #f6f6f7; border-bottom: 0.5px solid #dcdce0;
+  font-size: 13px; font-weight: 500; color: #6e6e73;
+}
+.mac-lights { position: absolute; left: 12px; top: 8px; display: flex; gap: 8px; }
+.mac-lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
+.mac-lights i:nth-child(2) { background: #febc2e; }
+.mac-lights i:nth-child(3) { background: #28c840; }
+html.framed #stage { z-index: 1; border-radius: 0 0 12px 12px; }
+
+html.framed body.theme-dark {
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 100%, rgba(91, 85, 180, 0.35), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 15% 0%, rgba(120, 90, 150, 0.25), transparent 70%),
+    #0c0c10;
+}
+.theme-dark .mac-titlebar { background: #1c1c20; border-bottom-color: #000; color: #8b8b95; }
+html.framed .theme-dark .mac-window, html.framed body.theme-dark .mac-window { background: #000; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.14), 0 22px 70px rgba(0,0,0,0.6); }
